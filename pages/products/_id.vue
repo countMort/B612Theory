@@ -4,10 +4,10 @@
       :title="`B612 Theory | خرید ${product.name}`"
       :description="product.description"
       :image="product.photos && product.photos[0]"
-    ></SocialHead>
+    />
     <v-row class="mt-0">
       <v-col cols="12" class="py-0">
-        <v-breadcrumbs class="mx-0 px-0" :items="breadcrumbs"> </v-breadcrumbs>
+        <v-breadcrumbs class="mx-0 px-0" :items="breadcrumbs" />
       </v-col>
       <v-col cols="12" sm="4" lg="3" class="mx-0 px-0 pb-0 d-flex align-center">
         <v-card
@@ -23,7 +23,7 @@
             height="100%"
             :src="type.photos[0] || product.photos[0]"
             :lazy-src="type.thumbnails[0] || product.thumbnails[0]"
-          ></v-img>
+          />
         </v-card>
       </v-col>
       <v-col cols="12" sm="8" lg="9" class="mx-0 pt-0 px-0">
@@ -46,6 +46,7 @@
           </v-card-title>
           <v-card-text class="px-0 pb-0">
             <v-select
+              v-model="type"
               class="px-2"
               dense
               hide-details
@@ -53,7 +54,6 @@
               :items="product.types"
               item-text="name"
               return-object
-              v-model="type"
             />
             <v-list two-line>
               <v-list-item>
@@ -81,9 +81,10 @@
                     موجودی در انبار:
                     {{ stockQuantity }}
                   </v-list-item-subtitle>
-                  <v-row class="mx-0 my-0" v-if="!type.custom">
+                  <v-row v-if="!type.custom" class="mx-0 my-0">
                     <v-form ref="form" class="d-flex justify-space-around">
                       <v-text-field
+                        v-model="quantity"
                         :rules="rule"
                         outlined
                         style="max-width: 200px"
@@ -93,19 +94,17 @@
                         label="تعداد سفارش"
                         type="number"
                         :disabled="stockQuantity == 0"
-                        v-model="quantity"
-                      >
-                      </v-text-field>
+                      />
                     </v-form>
                     <div class="mx-auto text-center">
                       تعداد سفارشتان را انتخاب کنید
-                      <br />
+                      <br>
                       <QuantitySnippet
                         :color="snippetColor"
+                        :quantity="Number(quantity)"
+                        :stock-quantity="stockQuantity"
                         @increase="increaseQuantity"
                         @decrease="decreaseQuantity"
-                        :quantity="Number(quantity)"
-                        :stockQuantity="stockQuantity"
                       />
                     </div>
                     <div class="text-center mx-auto">
@@ -114,7 +113,7 @@
                         {{ (quantity * type.price) | number }}
                         &nbsp; تومان
                       </v-chip>
-                      <br />
+                      <br>
                       <v-btn
                         color="primary"
                         class="my-2"
@@ -125,7 +124,9 @@
                           افزودن به سبد &nbsp;&nbsp;
                           <v-icon>mdi-cart-outline</v-icon>
                         </template>
-                        <template v-else> ناموجود </template>
+                        <template v-else>
+                          ناموجود
+                        </template>
                       </v-btn>
                     </div>
                   </v-row>
@@ -143,15 +144,15 @@
                   size="100"
                 >
                   <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
+                    <template #activator="{ on, attrs }">
                       <v-progress-circular
-                        v-bind="attrs"
-                        v-on="on"
                         size="80"
                         color="teal"
                         width="13"
                         :value="product.aboveMiddle"
                         rotate="180"
+                        v-bind="attrs"
+                        v-on="on"
                       >
                         {{ product.aboveMiddle }}%
                       </v-progress-circular>
@@ -166,16 +167,19 @@
             </v-list>
           </v-card-text>
           <v-card-actions
+            v-if="
+              $auth.user && ['admin', 'super_admin'].includes($auth.user.role)
+            "
             class="d-flex justify-center pt-0"
-            v-if="$auth.user && ['admin', 'super_admin'].includes($auth.user.role)"
           >
             <v-btn
               nuxt
               :to="'/admin/products/' + product._id"
               color="warning"
               class="white--text"
-              >به روز رسانی</v-btn
             >
+              به روز رسانی
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -189,127 +193,143 @@
 </template>
 
 <script>
-import reviewSection from "~/components/review-section";
-import SocialHead from "@/components/SocialHead.vue";
-import QuantitySnippet from "@/components/products/QuantitySnippet.vue";
+// import reviewSection from '~/components/review-section'
+import SocialHead from '@/components/SocialHead.vue'
+import QuantitySnippet from '@/components/products/QuantitySnippet.vue'
 export default {
   components: {
-    reviewSection,
+    // reviewSection,
     SocialHead,
-    QuantitySnippet,
+    QuantitySnippet
   },
-  async asyncData({ $axios, params, store }) {
+  async asyncData ({ $axios, params, store }) {
     try {
-      const { result } = await $axios.$get(`/api/products/${params.id}`);
-      const product = result.product;
-      const type = product.types[0];
-      let quantity = 0;
-      if (product.stockQuantity > 0 && type.stockQuantity > 0) quantity = 1;
-      store.commit("cartWatchedPush", product);
+      const { result } = await $axios.$get(`/api/products/${params.id}`)
+      const product = result.product
+      const type = product.types[0]
+      let quantity = 0
+      if (product.stockQuantity > 0 && type.stockQuantity > 0) {
+        quantity = 1
+      }
+      store.commit('cartWatchedPush', product)
       return {
         product,
         type,
-        quantity,
-      };
+        quantity
+      }
     } catch (error) {
-      console.log(error);
+      // console.log(error)
     }
   },
-  data() {
+  data () {
     return {
       loading: false,
       selection: 1,
       rule: [
-        (v) => !!v || "",
-        (v) => v > 0 || "",
-        (v) => v <= this.stockQuantity || "",
+        v => !!v || '',
+        v => v > 0 || '',
+        v => v <= this.stockQuantity || ''
       ],
       reviews: [],
-      snippetColor: "",
-    };
-  },
-  watch: {
-    type(newValue) {
-      this.quantity = 0
-      if (this.product.stockQuantity > 0 && this.type.stockQuantity > 0) this.quantity = 1;
+      snippetColor: ''
     }
   },
-  mounted() {
-    this.READ();
-  },
-  methods: {
-    READ() {
-      let reviews = this.$axios.$get(`api/reviews/${this.product.id}`);
-      this.reviews = reviews.reviews;
-    },
-    addProductToCart(type, quantity) {
-      if (this.$refs.form.validate()) {
-        type = { ...type };
-        type.product = this.product;
-        this.$store.dispatch("addProductToCart", {
-          product: type,
-          quantity: quantity,
-        });
-        this.$nuxt.$router.push("/cart");
-      }
-    },
-    async deleteProduct() {
-      try {
-        const result = await this.$axios.$delete(
-          `/api/products/${this.$route.params.id}`
-        );
-        result.success ? this.$nuxt.$router.push("/") : "";
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    navigate(product, type) {
-      const value = product.category.value;
-      const route =
-        "/products/" + value[0].toUpperCase() + value.slice(1) + "/" + type._id;
-      this.$nuxt.$router.push(route);
-    },
-    increaseQuantity() {
-      if (this.quantity >= this.stockQuantity) return;
-      this.quantity++;
-      if (this.quantity == this.stockQuantity) this.snippetColor = "primary";
-      else this.snippetColor = "";
-    },
-    decreaseQuantity() {
-      if (this.quantity <= 0) return;
-      this.quantity--;
-      if (this.quantity == 0) this.snippetColor = "error";
-      else this.snippetColor = "";
-    },
-  },
   computed: {
-    scrollOptions() {
+    scrollOptions () {
       return {
-        easing: "linear",
+        easing: 'linear',
         duration: 1000,
-        offset: 1,
-      };
+        offset: 1
+      }
     },
-    stockQuantity() {
-      return Math.min(this.product.stockQuantity, this.type.stockQuantity);
+    stockQuantity () {
+      return Math.min(this.product.stockQuantity, this.type.stockQuantity)
     },
-    breadcrumbs() {
+    breadcrumbs () {
       return [
         {
-          text: "صفحه اصلی",
-          to: "/",
-          nuxt: true,
+          text: 'صفحه اصلی',
+          to: '/',
+          nuxt: true
         },
         {
           text: this.product.category.name,
-          to: "/categories/" + this.product.category._id,
-          nuxt: true,
+          to: '/categories/' + this.product.category._id,
+          nuxt: true
         },
         {
-          text: this.product.name,
-        },
-      ];
-    },
+          text: this.product.name
+        }
+      ]
+    }
   },
-};
+  watch: {
+    type (newValue) {
+      this.quantity = 0
+      if (this.product.stockQuantity > 0 && this.type.stockQuantity > 0) {
+        this.quantity = 1
+      }
+    }
+  },
+  mounted () {
+    this.READ()
+  },
+  methods: {
+    READ () {
+      const reviews = this.$axios.$get(`api/reviews/${this.product.id}`)
+      this.reviews = reviews.reviews
+    },
+    addProductToCart (type, quantity) {
+      if (this.$refs.form.validate()) {
+        type = { ...type }
+        type.product = this.product
+        this.$store.dispatch('addProductToCart', {
+          product: type,
+          quantity
+        })
+        this.$nuxt.$router.push('/cart')
+      }
+    },
+    async deleteProduct () {
+      try {
+        const result = await this.$axios.$delete(
+          `/api/products/${this.$route.params.id}`
+        )
+        if (result.success) {
+          this.$nuxt.$router.push('/')
+        }
+      } catch (error) {
+        // console.log(error)
+      }
+    },
+    navigate (product, type) {
+      const value = product.category.value
+      const route =
+        '/products/' + value[0].toUpperCase() + value.slice(1) + '/' + type._id
+      this.$nuxt.$router.push(route)
+    },
+    increaseQuantity () {
+      if (this.quantity >= this.stockQuantity) {
+        return
+      }
+      this.quantity++
+      if (this.quantity == this.stockQuantity) {
+        this.snippetColor = 'primary'
+      } else {
+        this.snippetColor = ''
+      }
+    },
+    decreaseQuantity () {
+      if (this.quantity <= 0) {
+        return
+      }
+      this.quantity--
+      if (this.quantity == 0) {
+        this.snippetColor = 'error'
+      } else {
+        this.snippetColor = ''
+      }
+    }
+  }
+}
 </script>
