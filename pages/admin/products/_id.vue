@@ -232,6 +232,7 @@ export default {
               'admin'
             )
             data.photos[0] = res.info.url
+            data.thumbnails[0] = res.info.thumbnail
           }
           const result = await this.$axios.$put(`/api/products/${id}`, data)
           this.$toast.success(result.message)

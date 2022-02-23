@@ -10,6 +10,7 @@
     </v-chip>
     <v-row class="justify-center">
       <template v-for="category in categories">
+        <!-- v-if="category.display !== 'none'" -->
         <v-col
           v-if="category.display !== 'none'"
           :key="category._id"

@@ -19,11 +19,8 @@
           height="300"
           width="300"
           :src="item.image"
-          align="center"
           @load="disableLoading(i)"
-        >
-          {{ item.title }}
-        </v-img>
+        />
       </v-card>
     </div>
   </v-container>

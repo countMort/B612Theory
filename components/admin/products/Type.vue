@@ -168,6 +168,7 @@ export default {
               'admin'
             )
             data.photos[0] = res.info.url
+            data.thumbnails[0] = res.info.thumbnail
           }
           this.uploading = false
           if (this.isEdit) {
