@@ -4,54 +4,48 @@
     class="text-center justify-center d-flex align-center"
   >
     <v-progress-linear
-      style="
-        top: 15px;
-        position: absolute;
-        z-index: 2;
-        "
+      v-if="loading"
+      style="top: 15px; position: absolute; z-index: 2"
       indeterminate
       height="2"
-      v-if="loading"
     />
     <transition name="fade">
       <v-progress-linear
-        style="
-            top: 15px;
-            position: absolute;
-            z-index: 2;
-            "
+        v-if="buffered > 0 && buffered < 100 && !!seek"
+        style="top: 15px; position: absolute; z-index: 2"
         stream
         :buffer-value="buffered"
         :value="seek"
         height="3"
         color="primary"
-        v-if="buffered > 0 && buffered < 100 && !!seek"
       />
     </transition>
     <!-- <audio v-if="OS" v-show="false" preload="auto" id="audio" :src="voiceCard.audio" /> -->
     <audio
       v-show="false"
+      id="audio"
       preload="auto"
       :style="playing ? 'opacity: 0.7' : ''"
-      id="audio"
     >
-      <source :src="voiceCard.audio" type="audio/mpeg" />
-      <source :src="voiceCard.audio" type="audio/ogg" />
-      <source :src="voiceCard.audio" type="audio/flac" />
-      <source :src="voiceCard.audio" type="audio/mp4" />
-      <source :src="voiceCard.audio" type="audio/wav" />
-      <source :src="voiceCard.audio" type="audio/x-m4a" />
+      <source :src="voiceCard.audio" type="audio/mpeg">
+      <source :src="voiceCard.audio" type="audio/ogg">
+      <source :src="voiceCard.audio" type="audio/flac">
+      <source :src="voiceCard.audio" type="audio/mp4">
+      <source :src="voiceCard.audio" type="audio/wav">
+      <source :src="voiceCard.audio" type="audio/x-m4a">
+      Does Not Support
     </audio>
     <AddVoice
+      v-if="onInputProcess"
+      :voice-card="voiceCard"
       dark
       @updated="refresh()"
-      :voiceCard="voiceCard"
-      v-if="onInputProcess"
+      @sampleUpdated="sampleUpdated"
     />
     <template v-else>
       <v-img
-        max-width="800"
         id="my-node"
+        max-width="800"
         :aspect-ratio="14.142 / 10"
         class="align-center text-center my-auto"
         :src="voiceCard && voiceCard.photo"
@@ -67,13 +61,13 @@
           :indeterminate="!loading && waiting"
         >
           <v-btn
+            v-if="!playing"
             :ripple="false"
             :large="!$vuetify.breakpoint.xsOnly && !seek"
             :x-small="$vuetify.breakpoint.xsOnly && !!seek"
+            :disabled="waiting"
             icon
             @click="play"
-            :disabled="waiting"
-            v-if="!playing"
           >
             <v-icon
               :large="!$vuetify.breakpoint.xsOnly && !seek"
@@ -83,22 +77,22 @@
             </v-icon>
           </v-btn>
           <v-btn
+            v-else
             :x-small="$vuetify.breakpoint.xsOnly"
             :ripple="false"
             icon
             @click="pause"
-            v-else
           >
             <v-icon :small="$vuetify.breakpoint.xsOnly">
               mdi-pause
             </v-icon>
           </v-btn>
           <v-btn
+            v-if="seek"
             :x-small="$vuetify.breakpoint.xsOnly"
             :ripple="false"
             icon
             @click="stop"
-            v-if="seek"
           >
             <v-icon :small="$vuetify.breakpoint.xsOnly">
               mdi-stop
@@ -115,34 +109,47 @@
 // if(process.client) {
 //     var WaveSurfer = require("@/utils/wave.js")
 // }
-import AddVoice from "~/components/voice-card/AddVoice.vue";
+import AddVoice from '~/components/voice-card/AddVoice.vue'
 export default {
   components: {
     AddVoice
   },
-  layout: "VoiceCard",
-  async asyncData({ $axios, route }) {
+  layout: 'VoiceCard',
+  async asyncData ({ $axios, route, params }) {
     try {
-      let { result } = await $axios.$get(`/api/voice-card/${route.params.id}`, {
+      const isSample = params.id === 'sample-1'
+      if (isSample) {
+        return {
+          voiceCard: {
+            isSample: true,
+            photo: 'https://dl.b612theory.ir/admin/kahkeshan.jpg',
+            type: '60a80142d6a7bbb590a2fc99',
+            qrNumber: 1,
+            waveColor: '#000000'
+          },
+          onInputProcess: true
+        }
+      }
+      const { result } = await $axios.$get(`/api/voice-card/${route.params.id}`, {
         params: {
           password: route.query.password
         }
-      });
-      if (!result.audio)
+      })
+      if (!result.audio) {
         return {
           voiceCard: result,
           onInputProcess: true
-        };
-      else
+        }
+      } else {
         return {
           onInputProcess: false,
           voiceCard: result
-        };
+        }
+      }
     } catch (error) {
-      console.log(error);
     }
   },
-  data() {
+  data () {
     return {
       seek: 0,
       playing: false,
@@ -156,32 +163,34 @@ export default {
       onInputProcess: false,
       waiting: false
       // progressColor: 'white'
-    };
-  },
-  mounted() {
-    this.setupWave();
-    // this.wavesurfer.load(result.audio)
+    }
   },
   computed: {
-    OS() {
-      if (!process.client) return true;
-      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    OS () {
+      if (!process.client) {
+        return true
+      }
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera
 
-      // Windows Phone must come first because its UA also contains "Android"
+      // Windows Phone must come first because its UA also contains 'Android'
       if (/windows phone/i.test(userAgent)) {
-        return true;
+        return true
       }
 
       if (/android/i.test(userAgent)) {
-        return true;
+        return true
       }
 
       // iOS detection from: http://stackoverflow.com/a/9039885/177710
       if (/iPad|iPhone|iPod|Mac OS X/.test(userAgent) && !window.MSStream) {
-        return false;
+        return false
       }
-      return true;
+      return true
     }
+  },
+  mounted () {
+    this.setupWave()
+    // this.wavesurfer.load(result.audio)
   },
   methods: {
     // READ(password) {
@@ -198,10 +207,10 @@ export default {
     //         // this.wavesurfer.load(result.audio)
     //     }, this)
     // },
-    setupWave() {
-      this.wavesurfer = document.getElementById("audio");
-      this.wavesurfer.addEventListener("waiting", () => (this.waiting = true));
-      this.wavesurfer.addEventListener("canplay", () => (this.waiting = false));
+    setupWave () {
+      this.wavesurfer = document.getElementById('audio')
+      this.wavesurfer.addEventListener('waiting', () => (this.waiting = true))
+      this.wavesurfer.addEventListener('canplay', () => (this.waiting = false))
       // this.duration = this.wavesurfer.duration
 
       // this.wavesurfer = WaveSurfer.create({
@@ -215,7 +224,7 @@ export default {
       //     // interact: false,
       //     responsive: true,
       //     height: 128,
-      //     progressColor: "white",
+      //     progressColor: 'white',
       // });
       // this.wavesurfer.on('ready', () => {
       //     this.loading = false
@@ -228,52 +237,63 @@ export default {
       // })
       // this.wavesurfer.on('loading', (percentage) => this.buffered = percentage)
     },
-    play() {
-      this.$try(async () => {
-        if (!this.wavesurfer.duration) return;
-        this.wavesurfer.play();
-        this.playing = true;
-        this.duration = this.wavesurfer.duration;
+    play () {
+      this.$try(() => {
+        if (!this.wavesurfer.duration) {
+          return
+        }
+        this.wavesurfer.play()
+        this.playing = true
+        this.duration = this.wavesurfer.duration
         this.progress = setInterval(() => {
           // this.seek = (this.wavesurfer.getCurrentTime()/this.duration).toFixed(3)*100
           this.seek =
-            (this.wavesurfer.currentTime / this.duration).toFixed(3) * 100;
+            (this.wavesurfer.currentTime / this.duration).toFixed(3) * 100
           this.buffered =
-            (this.wavesurfer.buffered.end(0) / this.duration).toFixed(3) * 100;
-          if (this.seek == 100) this.stop();
-        }, 300);
-      });
+            (this.wavesurfer.buffered.end(0) / this.duration).toFixed(3) * 100
+          if (this.seek == 100) {
+            this.stop()
+          }
+        }, 300)
+      })
     },
-    pause() {
-      clearInterval(this.progress);
-      this.wavesurfer.pause();
-      this.playing = false;
+    pause () {
+      clearInterval(this.progress)
+      this.wavesurfer.pause()
+      this.playing = false
     },
-    stop() {
-      clearInterval(this.progress);
+    stop () {
+      clearInterval(this.progress)
       // this.wavesurfer.stop()
-      this.wavesurfer.pause();
-      this.playing = false;
-      this.wavesurfer.currentTime = 0;
-      this.seek = 0;
+      this.wavesurfer.pause()
+      this.playing = false
+      this.wavesurfer.currentTime = 0
+      this.seek = 0
     },
-    setHeight() {
+    setHeight () {
       this.height = document
-        .querySelector("#my-node .v-image__image.v-image__image--cover")
-        .clientHeight.toFixed(0);
-      this.wavesurfer.setHeight(this.height / 10);
+        .querySelector('#my-node .v-image__image.v-image__image--cover')
+        .clientHeight.toFixed(0)
+      this.wavesurfer.setHeight(this.height / 10)
       setTimeout(() => {
         this.height = document
-          .querySelector("#my-node .v-image__image.v-image__image--cover")
-          .clientHeight.toFixed(0);
-        this.wavesurfer.setHeight(this.height / 10);
-      }, 1000);
+          .querySelector('#my-node .v-image__image.v-image__image--cover')
+          .clientHeight.toFixed(0)
+        this.wavesurfer.setHeight(this.height / 10)
+      }, 1000)
     },
-    refresh() {
-      location.reload();
+    refresh () {
+      location.reload()
+    },
+    sampleUpdated (data) {
+      this.wavesurfer = document.createElement('audio')
+      this.wavesurfer.src = data.audio
+      this.wavesurfer.addEventListener('waiting', () => (this.waiting = true))
+      this.wavesurfer.addEventListener('canplay', () => (this.waiting = false))
+      this.onInputProcess = false
     }
   }
-};
+}
 </script>
 
 <style>

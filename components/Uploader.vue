@@ -1,5 +1,5 @@
 <template>
-  <v-row class="my-0 py-0" v-show="uploading">
+  <v-row v-show="uploading" class="my-0 py-0">
     <v-col class="my-0">
       <v-progress-linear
         :color="color"
@@ -8,18 +8,18 @@
         :striped="striped"
         :stream="stream"
         :buffer-value="0"
-      ></v-progress-linear>
+      />
     </v-col>
     <v-col cols="auto" class="py-0 my-auto text-center">
       <v-tooltip top>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-btn
-            v-on="on"
-            v-bind="attrs"
             v-show="uploading"
+            v-bind="attrs"
             small
             icon
             color="red"
+            v-on="on"
             @click="cancel"
           >
             <v-icon :size="20">
@@ -44,7 +44,7 @@ export default {
     },
     color: {
       type: String,
-      default: "primary"
+      default: 'primary'
     },
     striped: {
       type: Boolean,
@@ -55,84 +55,84 @@ export default {
       default: true
     }
   },
-  data() {
+  data () {
     return {
       uploading: false,
       uploadProgress: 0,
       source: null
-    };
+    }
   },
   methods: {
-    upload(file, role, method = "post", route, otherData = {}) {
-      const vue = this;
-      this.source = this.$axios.CancelToken.source();
+    upload (file, role, method = 'post', route, otherData = {}) {
+      const vue = this
+      this.source = this.$axios.CancelToken.source()
 
       return new Promise((resolve, reject) => {
-        vue.uploading = true;
-        var formData = new FormData();
-        formData.append("file", file);
-        for (let key in otherData) {
-          formData.append(key, otherData[key]);
+        vue.uploading = true
+        const formData = new FormData()
+        formData.append('file', file)
+        for (const key in otherData) {
+          formData.append(key, otherData[key])
         }
-        route = route || `/api/upload${role == "admin" ? "/admin" : ""}`;
+        route = route || `/api/upload${role == 'admin' ? '/admin' : ''}`
         const config = {
           progress: true,
           cancelToken: this.source.token,
-          onUploadProgress: progressEvent => {
+          onUploadProgress: (progressEvent) => {
             // console.log(progressEvent);
             const totalLength = progressEvent.lengthComputable
               ? progressEvent.total
-              : progressEvent.target.getResponseHeader("content-length") ||
+              : progressEvent.target.getResponseHeader('content-length') ||
                 progressEvent.target.getResponseHeader(
-                  "x-decompressed-content-length"
-                );
+                  'x-decompressed-content-length'
+                )
             // console.log("onUploadProgress", totalLength);
             if (totalLength !== null) {
               vue.uploadProgress = Math.round(
                 (progressEvent.loaded * 100) / totalLength
-              );
+              )
               // console.log(vue.uploadProgress);
               // console.log(totalLength);
               // console.log(progressEvent.loaded);
             }
           }
-        };
-        if (method == "put") {
+        }
+        if (method == 'put') {
           this.$axios
             .$put(route, formData, config)
-            .then(result => {
-              resolve(result);
-              vue.uploading = false;
-              vue.uploadProgress = 0;
+            .then((result) => {
+              resolve(result)
+              vue.uploading = false
+              vue.uploadProgress = 0
             })
-            .catch(error => {
-              reject(error);
-              vue.uploadProgress = 0;
-              vue.uploading = false;
-            });
-        } else if (method == "post") {
+            .catch((error) => {
+              reject(error)
+              vue.uploadProgress = 0
+              vue.uploading = false
+            })
+        } else if (method == 'post') {
           this.$axios
             .$post(route, formData, config)
-            .then(result => {
-              resolve(result);
-              vue.uploading = false;
-              vue.uploadProgress = 0;
+            .then((result) => {
+              resolve(result)
+              vue.uploading = false
+              vue.uploadProgress = 0
             })
-            .catch(error => {
-              reject(error);
-              vue.uploadProgress = 0;
-              vue.uploading = false;
-            });
+            .catch((error) => {
+              reject(error)
+              vue.uploadProgress = 0
+              vue.uploading = false
+            })
         }
-      });
+      })
     },
-    cancel() {
+    cancel () {
       if (this.source) {
-        this.source.cancel("آپلود لغو شد");
+        this.source.cancel('آپلود لغو شد')
       }
     }
   }
-};
+}
 </script>
 
 <style scoped></style>
