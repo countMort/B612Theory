@@ -174,6 +174,7 @@ export default {
         price: 0,
         description: '',
         photos: [],
+        thumbnails: [],
         stockQuantity: 1,
         type: 'normal',
         typeList: [
@@ -233,6 +234,7 @@ export default {
     clear () {
       this.file = []
       this.data.photos = []
+      this.data.thumbnails = []
       this.$refs.form.reset()
     }
   }

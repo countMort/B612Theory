@@ -124,6 +124,7 @@ export default {
         price: 0,
         stockQuantity: 0,
         photos: [],
+        thumbnails: [],
         description: ''
       },
       file: [],
@@ -168,7 +169,7 @@ export default {
               'admin'
             )
             data.photos[0] = res.info.url
-            data.thumbnails[0] = res.info.thumbnail
+            data.thumbnails = [res.info.thumbnail]
           }
           this.uploading = false
           if (this.isEdit) {
@@ -179,7 +180,7 @@ export default {
           this.dialog = false
         }
       } catch (error) {
-        // console.log(error)
+        console.log(error)
         this.uploading = false
       }
     }
