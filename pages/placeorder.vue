@@ -19,11 +19,7 @@
                 </div>
                 <v-divider />
                 <template v-if="!$store.state.auth.user.address">
-                  <v-btn
-                    color="red"
-                    text
-                    @click="redirect"
-                  >
+                  <v-btn color="red" text @click="redirect">
                     لطفا آدرس خود را ثبت کنید.
                   </v-btn>
                 </template>
@@ -39,11 +35,7 @@
               </v-col>
               <v-col cols="12" sm="6">
                 <div class="font-weight-bold">
-                  روش پرداخت&nbsp;<v-btn
-                    disabled
-                    text
-                    color="primary"
-                  >
+                  روش پرداخت&nbsp;<v-btn disabled text color="primary">
                     تغییر
                   </v-btn>
                 </div>
@@ -168,20 +160,19 @@
           <v-card-text class="subtitle-2 text-center">
             لطفا پس از ثبت سفارش، هزینه نهایی را به شماره کارت
             <v-btn
-              v-clipboard:copy="6037697602717826"
+              v-clipboard:copy="6037991780798769"
               v-clipboard:success="onCopy"
               block
               outlined
             >
               <v-icon> mdi-content-copy </v-icon>
               <v-spacer />
-              6037697602717826
+              6037991780798769
             </v-btn>
             به نام
-            <b> سجاد ایزدی و زهرا لطفی </b>
-            ، بانک صادرات واریز کنید و اطلاعات پرداخت را در بخش اطلاعات سفارش
-            وارد کنید. سفارش شما پس از تایید حداکثر پس از 4 روز کاری تحویل شرکت
-            پست می‌شود.
+            <b>سجاد ایزدی</b>
+            واریز کنید و اطلاعات پرداخت را در بخش اطلاعات سفارش وارد کنید. سفارش
+            شما پس از تایید حداکثر پس از 4 روز کاری تحویل شرکت پست می‌شود.
           </v-card-text>
         </v-card>
         <v-card outlined>

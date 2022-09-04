@@ -11,21 +11,37 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: 'google-site-verification', content: '5Te0JCs2f01GsIj-bVeFAU8ZN8BPsOU-DKYUIBQDZ4k' },
-      { hid: 'description', name: 'description', content: 'کبریت رنگی B612 | خرید حس خوب برای دیگران' },
-      { name: 'keywords', content: 'کبریت رنگی , b612 , B612 , هنری,هنر,رومنس,هدیه , کادو' },
+      {
+        name: 'google-site-verification',
+        content: '5Te0JCs2f01GsIj-bVeFAU8ZN8BPsOU-DKYUIBQDZ4k'
+      },
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'کبریت رنگی B612 | خرید حس خوب برای دیگران'
+      },
+      {
+        name: 'keywords',
+        content: 'کبریت رنگی , b612 , B612 , هنری,هنر,رومنس,هدیه , کادو'
+      },
       { name: 'format-detection', content: 'telephone=no' }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/logo.ico' }
-    ]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/logo.ico' }]
+    // script: [
+    //   {
+    //     src: 'https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image.prod.js'
+    //   },
+    //   {
+    //     src: 'https://aframe.io/releases/1.2.0/aframe.min.js'
+    //   },
+    //   {
+    //     src: 'https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image-aframe.prod.js'
+    //   }
+    // ]
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: [
-    '@/assets/fonts/iransans/css/fontiran.css',
-    '~/assets/variables.scss'
-  ],
+  css: ['@/assets/fonts/iransans/css/fontiran.css', '~/assets/variables.scss'],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
@@ -64,7 +80,8 @@ export default {
     duration: 5000,
     // theme: 'outline',
     className: 'text-text',
-    register: [ // Register custom toasts
+    register: [
+      // Register custom toasts
       {
         name: 'default-error',
         message: 'مشکلی به وجود آمده است',
@@ -160,11 +177,14 @@ export default {
   },
 
   auth: {
-
     strategies: {
       local: {
         endpoints: {
-          login: { url: '/api/auth/login', method: 'post', propertyName: 'token' },
+          login: {
+            url: '/api/auth/login',
+            method: 'post',
+            propertyName: 'token'
+          },
           logout: { url: '/api/auth/logout', method: 'post' },
           user: { url: '/api/auth/user', method: 'get', propertyName: 'user' }
         }

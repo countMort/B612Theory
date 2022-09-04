@@ -87,8 +87,7 @@ export default {
         case 'true':
           redirect('https://www.instagram.com/b612theory/')
           break
-        default:
-        {
+        default: {
           const catReq = $axios.$get('/api/categories')
           const sliderReq = $axios.$get('/api/sliders')
           const [catRes, sliderRes] = await Promise.all([catReq, sliderReq])
