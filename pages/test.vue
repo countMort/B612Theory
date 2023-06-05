@@ -6,7 +6,7 @@
   </div>
 </template>
 <script>
-import MindAr from '@/components/MindAr.vue'
+import MindAr from '@/components/ar-templates/MindAr.vue'
 export default {
   components: {
     MindAr
