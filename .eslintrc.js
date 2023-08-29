@@ -16,6 +16,8 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
-    eqeqeq: 'off'
+    'vue/valid-v-slot': ['error', {
+      allowModifiers: true
+    }]
   }
 }

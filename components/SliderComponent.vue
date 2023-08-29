@@ -1,8 +1,8 @@
 <template>
   <hooper
     rtl
-    autoPlay
-    infiniteScroll
+    auto-play
+    infinite-scroll
     style="height: 100%;"
     :settings="settings"
   >
@@ -17,9 +17,9 @@
         outlined
       >
         <v-chip
+          v-if="soldOut(item)"
           label
           large
-          v-if="soldOut(item)"
           class="sold-out px-sm-8 font-weight-bold headline"
           color="error"
           outlined
@@ -31,15 +31,14 @@
           :src="item.photo || item.photos[0]"
           :lazy-src="item.thumbnails && item.thumbnails[0]"
           :alt="item.name"
-        >
-        </v-img>
+        />
         <v-card-title style="word-break: keep-all" class="py-1 subtitle-2 px-1">
           {{ item.name }}
         </v-card-title>
         <v-card-text
+          v-show="item.description"
           :class="$vuetify.breakpoint.xsOnly ? 'caption' : ''"
           class="px-1 py-0"
-          v-show="item.description"
         >
           <div
             style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;"
@@ -55,13 +54,13 @@
     <hooper-navigation
       v-show="!$vuetify.breakpoint.xsOnly"
       slot="hooper-addons"
-    ></hooper-navigation>
+    />
   </hooper>
 </template>
 
 <script>
-import { Hooper, Slide, Navigation as HooperNavigation } from "hooper";
-import "hooper/dist/hooper.css";
+import { Hooper, Slide, Navigation as HooperNavigation } from 'hooper'
+import 'hooper/dist/hooper.css'
 export default {
   components: {
     Hooper,
@@ -70,14 +69,15 @@ export default {
   },
   props: {
     items: {
-      type: Array
+      type: Array,
+      default: () => []
     },
     type: {
       type: String,
-      default: "product"
+      default: 'product'
     }
   },
-  data() {
+  data () {
     return {
       settings: {
         itemsToShow: 2,
@@ -97,14 +97,14 @@ export default {
           }
         }
       }
-    };
+    }
   },
   methods: {
-    soldOut(product) {
-      return product.stockQuantity == 0;
+    soldOut (product) {
+      return product.stockQuantity === 0
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped></style>

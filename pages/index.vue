@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import Slider from '@/components/Slider.vue'
+import Slider from '~/components/SliderComponent.vue'
 import SocialHead from '@/components/SocialHead.vue'
 export default {
   components: {

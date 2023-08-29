@@ -112,7 +112,7 @@
           md="4"
           sm="6"
         >
-          <v-card outlined tile class="pt-4">
+          <v-card outlined tile class="pt-4" :disabled="photo.sent">
             <v-img
               style="border: 1px solid black"
               class="mx-auto"
@@ -123,6 +123,7 @@
               :src="photo.newUrl"
             >
               <v-btn
+                v-if="!photo.sent"
                 :disabled="loading"
                 color="white"
                 fab
@@ -135,8 +136,9 @@
             <v-card-title
               v-show="photo.quote"
               class="pt-1 pb-0 px-0 caption justify-center"
-              v-text="photo.quote"
-            />
+            >
+              {{ photo.quote }}
+            </v-card-title>
             <b-uploader ref="uploader" />
             <v-divider class="mt-3" />
             <div class="mt-3">

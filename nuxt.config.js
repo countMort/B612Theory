@@ -24,7 +24,16 @@ export default {
         name: 'keywords',
         content: 'کبریت رنگی , b612 , B612 , هنری,هنر,رومنس,هدیه , کادو'
       },
-      { name: 'format-detection', content: 'telephone=no' }
+      { name: 'format-detection', content: 'telephone=no' },
+      {
+        'http-equiv': 'cache-control', content: 'no-cache'
+      },
+      {
+        'http-equiv': 'expires', content: '0'
+      },
+      {
+        'http-equiv': 'pragma', content: 'no-cache'
+      }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/logo.ico' }]
     // script: [

@@ -14,49 +14,6 @@
           {{ title }}
         </nuxt-link>
       </v-toolbar-title>
-      <!-- <template #extension>
-        <client-only>
-          <template v-for="menu in menus">
-            <v-menu :key="menu.text" v-if="menu.menus && (!menu.auth || ($auth.user && menu.auth.indexOf($auth.user.role) > -1))" bottom>
-              <template #activator="{attrs, on}">
-                <v-btn
-                text
-                :x-small="$vuetify.breakpoint.xsOnly"
-                v-on="on" v-bind="attrs"
-                tile
-                class="mt-2">
-                  <v-icon color="black">
-                    {{menu.icon}}
-                  </v-icon>
-                  &nbsp;{{menu.text}}
-                  <v-icon>
-                    mdi-chevron-down
-                  </v-icon>
-                </v-btn>
-              </template>
-              <v-card class="d-flex" style="flex-direction: column;">
-                <v-btn class="px-2" :class="$vuetify.breakpoint.xsOnly && 'caption'" v-for="menuItem in menu.menus" :key="menuItem.text" tile :large="!$vuetify.breakpoint.xsOnly" nuxt :to="menuItem.to">
-                  {{menuItem.text}}
-                  <v-spacer></v-spacer>
-                  <v-icon>
-                    {{menuItem.icon}}
-                  </v-icon>
-                </v-btn>
-              </v-card>
-            </v-menu>
-            <v-btn text :key="menu.text" tile v-else-if="!menu.auth || ($auth.user && menu.auth.indexOf($auth.user.role) > -1)" :x-small="$vuetify.breakpoint.xsOnly" nuxt :to="menu.to" class="mt-2">
-              <v-icon>{{menu.icon}}</v-icon>
-              &nbsp;{{menu.text}}
-            </v-btn>
-          </template>
-          <v-btn v-if="!$auth.loggedIn" :class="$vuetify.breakpoint.xsOnly ? 'caption' : ''" class="pr-0 pl-1 mt-2" text nuxt to="/Login" :x-small="$vuetify.breakpoint.xsOnly">
-            <v-icon :small="$vuetify.breakpoint.xsOnly">
-              mdi-account
-            </v-icon>
-            ورود/عضویت
-          </v-btn>
-        </client-only>
-      </template> -->
       <v-spacer />
       <v-tooltip bottom>
         <template #activator="{ attrs, on }">
@@ -129,7 +86,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { EventBus } from '@/utils/event-bus'
-import NavigationDrawer from '@/components/layout/Navigation.vue'
+import NavigationDrawer from '~/components/layout/NavigationDrawer.vue'
 
 let interval
 // import routeGenerator from '@/routes'
@@ -181,9 +138,9 @@ export default {
         this.snackbar.color = data.color
         this.snackbar.multiLine = data.multiLine
         this.snackbar.vertical = data.vertical
-        if (data.color == 'red') {
+        if (data.color === 'red') {
           this.snackbar.icon = 'mdi-alert'
-        } else if (data.color == 'green' || data.color == 'success') {
+        } else if (data.color === 'green' || data.color === 'success') {
           this.snackbar.icon = 'mdi-check'
         }
       }
