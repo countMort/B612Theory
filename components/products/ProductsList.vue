@@ -1,6 +1,6 @@
 <template>
   <!-- {{soldOut(item)}} -->
-  <v-list class="justify-center row">
+  <v-list class="list-container justify-center d-flex">
     <v-list-item
       v-for="item in availableItems"
       :key="item._id"
@@ -66,6 +66,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.list-container {
+  flex-wrap: wrap;
+}
 .item {
   flex-grow: 1;
 }
