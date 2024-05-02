@@ -64,7 +64,9 @@
     </v-main>
     <v-footer app absolute inset class="mt-2">
       <v-row class="mx-0 align-center my-0">
-        <span>B612&nbsp;&copy; {{ new Date().getFullYear() }}</span>
+        <a href="https://mpfr.ir" target="__blank">
+          <span>قدرت گرفته از معنا پردازان فناور رایا MPFR</span>
+        </a>
         <v-spacer />
         <a
           :title="title"
