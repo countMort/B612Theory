@@ -1,4 +1,4 @@
-import type { NuxtConfig } from '@nuxt/types'
+// import type { NuxtConfig } from '@nuxt/types'
 import colors from 'vuetify/es5/util/colors'
 // @ts-ignore
 import fa from 'vuetify/es5/locale/fa'
@@ -6,7 +6,7 @@ import fa from 'vuetify/es5/locale/fa'
 // const URL = env== 'dev' ? 'http://localhost:8111' : 'https://b612theory.ir'
 const URL = 'http://localhost:9905'
 
-const config: NuxtConfig = {
+const config = {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     // titleTemplate: '%s - B-612',

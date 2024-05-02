@@ -31,18 +31,15 @@
   </v-dialog>
 </template>
 
-<script lang="ts">
-import { PropType } from 'vue'
-import { Category } from '~/types/DB.type'
-
+<script>
 export default {
   props: {
     value: {
-      type: Boolean as PropType<boolean>,
+      type: Boolean,
       default: false,
     },
     item: {
-      type: Object as PropType<Category>,
+      type: Object,
       default: () => {},
     },
     loading: {
@@ -54,7 +51,7 @@ export default {
       get() {
         return this.value
       },
-      set(val: boolean) {
+      set(val) {
         this.$emit('input', val)
       },
     },

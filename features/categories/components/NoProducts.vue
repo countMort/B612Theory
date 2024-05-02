@@ -12,18 +12,16 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue, { PropType } from 'vue'
-import { Category } from '~/types/DB.type'
-
-export default Vue.extend({
+<script>
+export default {
   name: 'NoProduct',
   props: {
     category: {
-      type: Object as PropType<Category>,
+      type: Object,
+      default: () => {},
     },
   },
-})
+}
 </script>
 
 <style scoped></style>
