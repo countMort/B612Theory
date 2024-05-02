@@ -1,29 +1,40 @@
 <template>
-  <v-container style="height: 100%" class="align-center d-flex">
+  <div class="full-height">
     <ProductList
+      v-if="products?.length"
       :items="products"
       :large="$vuetify.breakpoint.mdAndUp && products.length < 8"
     />
-  </v-container>
+    <NoProducts v-else :category="category" />
+  </div>
 </template>
 
 <script>
-import ProductList from '@/components/products/ProductsList.vue'
+import ProductList from '~/features/categories/components/ProductsList.vue'
+import NoProducts from '~/features/categories/components/NoProducts.vue'
+
 export default {
   components: {
-    ProductList
+    ProductList,
+    NoProducts,
   },
-  async asyncData ({ $axios, params, redirect }) {
+  async asyncData({ $axios, params, redirect }) {
     try {
       const { result } = await $axios.$get(`/api/categories/${params.id}`)
-      if (result.products.length == 1) { redirect(`/products/${result.products[0]._id}`) }
+      const availableItems = result.products.filter(
+        (item) => item.stockQuantity
+      )
+      if (availableItems.length == 1) {
+        redirect(`/products/${result.products[0]._id}`)
+      }
       return {
-        products: result.products
+        products: availableItems,
+        category: result,
       }
     } catch (error) {
       console.log(error)
     }
-  }
+  },
 }
 </script>
 

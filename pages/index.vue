@@ -1,16 +1,13 @@
 <template>
-  <v-container class="pt-0">
+  <div>
     <SocialHead
       title="B612 Theory | تئوری بی‌ششصدودوازده"
       description="کبریت رنگی B612 | خرید حس خوب برای دیگران"
       image="https://dl.b612theory.ir/admin/shazde1.jpg"
     />
-    <v-chip label color="error" class="mt-4">
-      دسته‌بندی های محصولات
-    </v-chip>
+    <v-chip label color="error" class="mt-4"> دسته‌بندی های محصولات </v-chip>
     <v-row class="justify-center">
       <template v-for="category in categories">
-        <!-- v-if="category.display !== 'none'" -->
         <v-col
           v-if="category.display !== 'none'"
           :key="category._id"
@@ -61,7 +58,7 @@
       {{ sliders[1].name }}
     </v-chip>
     <Slider :items="sliders[1][sliders[1].type]" />
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -70,9 +67,9 @@ import SocialHead from '@/components/SocialHead.vue'
 export default {
   components: {
     Slider,
-    SocialHead
+    SocialHead,
   },
-  async asyncData ({ query, redirect, $axios }) {
+  async asyncData({ query, redirect, $axios }) {
     try {
       switch (query.redirect) {
         case 'the-little-prince':
@@ -94,7 +91,7 @@ export default {
           const sliders = sliderRes.result
           return {
             categories: catRes.result,
-            sliders
+            sliders,
           }
         }
       }
@@ -102,13 +99,13 @@ export default {
       console.log(error)
     }
   },
-  data () {
+  data() {
     return {
       selected: null,
       addDialog: false,
-      categories: []
+      categories: [],
     }
-  }
+  },
 }
 </script>
 

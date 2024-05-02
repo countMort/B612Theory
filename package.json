@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "build": "nuxt build",
+    "build": "tsc && nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
@@ -34,6 +34,7 @@
     "dom-to-image": "^2.6.0",
     "hooper": "^0.3.4",
     "nuxt": "^2.15.8",
+    "pinia": "^2.1.7",
     "qrcode": "^1.5.3",
     "remixicon": "^3.5.0",
     "vue": "^2.7.10",
@@ -48,12 +49,13 @@
     "vuex-persistedstate": "^3.2.1"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.19.1",
-    "@nuxtjs/eslint-config": "^11.0.0",
-    "@nuxtjs/eslint-module": "^3.1.0",
+    "@nuxt/types": "2.15.8",
+    "@nuxt/typescript-build": "^3.0.2",
+    "@nuxtjs/eslint-module": "^4.1.0",
     "@nuxtjs/vuetify": "^1.12.3",
-    "eslint": "^8.24.0",
-    "eslint-plugin-nuxt": "^4.0.0",
-    "eslint-plugin-vue": "^9.5.1"
+    "@types/node": "^20.12.2",
+    "@types/vue": "^2.0.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.3"
   }
 }

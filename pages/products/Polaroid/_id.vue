@@ -41,9 +41,7 @@
                       @cropping="cropping = $event"
                       @cropped="setPhoto"
                     >
-                      <template #label>
-                        عکساتو اینجا بذار
-                      </template>
+                      <template #label> عکساتو اینجا بذار </template>
                       <template #action>
                         <v-select
                           v-model="type"
@@ -91,12 +89,8 @@
                     small
                     @click="descDialog = true"
                   >
-                    <template v-if="!photos.length">
-                      راهنما
-                    </template>
-                    <v-icon
-                      v-if="Boolean(photos.length)"
-                    >
+                    <template v-if="!photos.length"> راهنما </template>
+                    <v-icon v-if="Boolean(photos.length)">
                       mdi-help-circle
                     </v-icon>
                   </v-btn>
@@ -174,9 +168,7 @@
                 block
                 @click="sendPolaroid([index])"
               >
-                <v-icon class="ml-2">
-                  mdi-cloud-upload
-                </v-icon>
+                <v-icon class="ml-2"> mdi-cloud-upload </v-icon>
                 افزودن به سبد
               </v-btn>
             </div>
@@ -201,41 +193,41 @@ export default {
     DescDialog,
     SocialHead,
     CheckUser,
-    QuantityButtons
+    QuantityButtons,
   },
-  async asyncData ({ $axios, params }) {
+  async asyncData({ $axios, params }) {
     try {
       const { result } = await $axios.$get('/api/products/' + params.id)
       const polaroid = result.product
       const type = result.type || polaroid.types[0]
       return {
         polaroid,
-        type
+        type,
       }
     } catch (error) {
       console.log(error)
     }
   },
-  data () {
+  data() {
     return {
       photos: [],
       quote: '',
-      quantityRules: [v => v > 0 || ''],
+      quantityRules: [(v) => v > 0 || ''],
       imageRules: [
-        v =>
+        (v) =>
           !v ||
           v.length < 1 ||
-          !v.some(photo => !photo.type.startsWith('image')) ||
-          'فرمت وارد شده صحیح نیست'
+          !v.some((photo) => !photo.type.startsWith('image')) ||
+          'فرمت وارد شده صحیح نیست',
       ],
       descDialog: false,
       cropping: false,
-      loading: false
+      loading: false,
     }
   },
   methods: {
     // ["image/png", "image/x-png", "image/gif", "image/jpeg","image/webp","image/wmf","image/aces","image/avci","image/avcs","image/avif","image/bmp","image/cgm","image/emf"]
-    async sendPolaroid (indexes) {
+    async sendPolaroid(indexes) {
       try {
         if (this.$refs.form.validate()) {
           this.loading = true
@@ -245,12 +237,14 @@ export default {
           for (let i = 0; i < indexes.length; i++) {
             const index = indexes[i]
             const photo = this.photos[index]
-            const result = await this.$refs.uploader[index].upload(photo.newFile)
+            const result = await this.$refs.uploader[index].upload(
+              photo.newFile
+            )
             const polaroid = {
               quote: photo.quote,
               type: photo.polaroidType._id,
               photo: result.info.url,
-              thumbnail: result.info.thumbnail
+              thumbnail: result.info.thumbnail,
             }
             const response = await this.$axios.$post('/api/polaroid', polaroid)
             const product = {
@@ -258,11 +252,11 @@ export default {
               product: { ...this.polaroid },
               polaroid: response.polaroid._id,
               photos: [polaroid.photo],
-              thumbnails: [polaroid.thumbnail]
+              thumbnails: [polaroid.thumbnail],
             }
             this.$store.dispatch('addProductToCart', {
               product,
-              quantity: photo.quantity
+              quantity: photo.quantity,
             })
             photo.sent = true
             photo.loading = false
@@ -278,11 +272,11 @@ export default {
         this.loading = false
       }
     },
-    sendAll () {
+    sendAll() {
       const indexes = this.photos.map((photo, index) => index)
       this.sendPolaroid(indexes)
     },
-    setPhoto (event) {
+    setPhoto(event) {
       const { index } = event
       const newPhoto = {
         ...this.photos[index],
@@ -290,26 +284,26 @@ export default {
         quantity: 1,
         qoute: '',
         sent: false,
-        loading: false
+        loading: false,
       }
       this.$set(this.photos, index, newPhoto)
     },
-    removePhoto (index) {
+    removePhoto(index) {
       this.$refs.PhotoUpload.remove(index)
     },
-    editPhoto (index) {
+    editPhoto(index) {
       this.$refs.PhotoUpload.editSingleFile(this.photos[index])
     },
-    givePrice (type, quantity) {
+    givePrice(type, quantity) {
       if (!type || !quantity) {
         return 0
       }
       return type.price * quantity
     },
-    addFile () {
+    addFile() {
       this.$refs.PhotoUpload.openUpload()
-    }
-  }
+    },
+  },
 }
 </script>
 

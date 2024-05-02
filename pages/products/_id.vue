@@ -58,9 +58,7 @@
             <v-list two-line>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title
-                    class="subtitle-2 d-flex justify-space-between align-center"
-                  >
+                  <v-list-item-title class="subtitle-2 d-flex align-center">
                     <div>
                       دسته بندی:
                       {{ product.category.name }}
@@ -70,11 +68,22 @@
                     </div>
                     <v-btn
                       v-if="type.custom"
-                      class="primary"
+                      class="primary mr-auto"
                       :disabled="stockQuantity == 0"
                       @click="navigate(product, type)"
                     >
-                      {{ stockQuantity == 0 ? "ناموجود" : "سفارش دهید" }}
+                      {{ stockQuantity == 0 ? 'ناموجود' : 'سفارش دهید' }}
+                    </v-btn>
+                    <v-btn
+                      v-if="
+                        $auth.user &&
+                        ['admin', 'super_admin'].includes($auth.user.role)
+                      "
+                      nuxt
+                      :to="'/admin/products/' + product._id"
+                    >
+                      <v-icon>mdi-file-edit-outline</v-icon>
+                      ویرایش
                     </v-btn>
                   </v-list-item-title>
                   <v-list-item-subtitle class="mt-2">
@@ -98,7 +107,7 @@
                     </v-form>
                     <div class="mx-auto text-center">
                       تعداد سفارشتان را انتخاب کنید
-                      <br>
+                      <br />
                       <QuantitySnippet
                         :color="snippetColor"
                         :quantity="Number(quantity)"
@@ -113,7 +122,7 @@
                         {{ (quantity * type.price) | number }}
                         &nbsp; تومان
                       </v-chip>
-                      <br>
+                      <br />
                       <v-btn
                         color="primary"
                         class="my-2"
@@ -124,9 +133,7 @@
                           افزودن به سبد &nbsp;&nbsp;
                           <v-icon>mdi-cart-outline</v-icon>
                         </template>
-                        <template v-else>
-                          ناموجود
-                        </template>
+                        <template v-else> ناموجود </template>
                       </v-btn>
                     </div>
                   </v-row>
@@ -166,21 +173,6 @@
               </v-list-item>
             </v-list>
           </v-card-text>
-          <v-card-actions
-            v-if="
-              $auth.user && ['admin', 'super_admin'].includes($auth.user.role)
-            "
-            class="d-flex justify-center pt-0"
-          >
-            <v-btn
-              nuxt
-              :to="'/admin/products/' + product._id"
-              color="warning"
-              class="white--text"
-            >
-              به روز رسانی
-            </v-btn>
-          </v-card-actions>
         </v-card>
       </v-col>
       <!-- <v-col cols=12 class="px-0">
@@ -200,9 +192,9 @@ export default {
   components: {
     // reviewSection,
     SocialHead,
-    QuantitySnippet
+    QuantitySnippet,
   },
-  async asyncData ({ $axios, params, store }) {
+  async asyncData({ $axios, params, store }) {
     try {
       const { result } = await $axios.$get(`/api/products/${params.id}`)
       const product = result.product
@@ -215,82 +207,82 @@ export default {
       return {
         product,
         type,
-        quantity
+        quantity,
       }
     } catch (error) {
       // console.log(error)
     }
   },
-  data () {
+  data() {
     return {
       loading: false,
       selection: 1,
       rule: [
-        v => !!v || '',
-        v => v > 0 || '',
-        v => v <= this.stockQuantity || ''
+        (v) => !!v || '',
+        (v) => v > 0 || '',
+        (v) => v <= this.stockQuantity || '',
       ],
       reviews: [],
-      snippetColor: ''
+      snippetColor: '',
     }
   },
   computed: {
-    scrollOptions () {
+    scrollOptions() {
       return {
         easing: 'linear',
         duration: 1000,
-        offset: 1
+        offset: 1,
       }
     },
-    stockQuantity () {
+    stockQuantity() {
       return Math.min(this.product.stockQuantity, this.type.stockQuantity)
     },
-    breadcrumbs () {
+    breadcrumbs() {
       return [
         {
           text: 'صفحه اصلی',
           to: '/',
-          nuxt: true
+          nuxt: true,
         },
         {
           text: this.product.category.name,
           to: '/categories/' + this.product.category._id,
-          nuxt: true
+          nuxt: true,
         },
         {
-          text: this.product.name
-        }
+          text: this.product.name,
+        },
       ]
-    }
+    },
   },
   watch: {
-    type (newValue) {
+    type(newValue) {
       this.quantity = 0
       if (this.product.stockQuantity > 0 && this.type.stockQuantity > 0) {
         this.quantity = 1
       }
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.READ()
   },
   methods: {
-    READ () {
+    READ() {
       const reviews = this.$axios.$get(`api/reviews/${this.product.id}`)
       this.reviews = reviews.reviews
     },
-    addProductToCart (type, quantity) {
+    addProductToCart(type, quantity) {
       if (this.$refs.form.validate()) {
         type = { ...type }
         type.product = this.product
         this.$store.dispatch('addProductToCart', {
           product: type,
-          quantity
+          quantity,
         })
         this.$nuxt.$router.push('/cart')
       }
     },
-    async deleteProduct () {
+    async deleteProduct() {
       try {
         const result = await this.$axios.$delete(
           `/api/products/${this.$route.params.id}`
@@ -302,13 +294,13 @@ export default {
         // console.log(error)
       }
     },
-    navigate (product, type) {
+    navigate(product, type) {
       const value = product.category.value
       const route =
         '/products/' + value[0].toUpperCase() + value.slice(1) + '/' + type._id
       this.$nuxt.$router.push(route)
     },
-    increaseQuantity () {
+    increaseQuantity() {
       if (this.quantity >= this.stockQuantity) {
         return
       }
@@ -319,7 +311,7 @@ export default {
         this.snippetColor = ''
       }
     },
-    decreaseQuantity () {
+    decreaseQuantity() {
       if (this.quantity <= 0) {
         return
       }
@@ -329,7 +321,7 @@ export default {
       } else {
         this.snippetColor = ''
       }
-    }
-  }
+    },
+  },
 }
 </script>

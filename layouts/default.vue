@@ -30,9 +30,7 @@
               <template #badge>
                 {{ getCartLength | number }}
               </template>
-              <v-icon
-                :small="$vuetify.breakpoint.xsOnly"
-              >
+              <v-icon :small="$vuetify.breakpoint.xsOnly">
                 mdi-cart-outline
               </v-icon>
             </v-badge>
@@ -42,7 +40,9 @@
       </v-tooltip>
     </v-app-bar>
     <v-main>
-      <nuxt />
+      <v-container class="full-height py-0">
+        <nuxt />
+      </v-container>
       <v-snackbar
         v-model="snackbar_show"
         :color="snackbar.color"
@@ -90,13 +90,13 @@ import NavigationDrawer from '~/components/layout/NavigationDrawer.vue'
 
 let interval
 // import routeGenerator from '@/routes'
-// import menuGeneretor from '@/menus'
+// import menuGenerator from '@/menus'
 export default {
   name: 'Layout',
   components: {
-    NavigationDrawer
+    NavigationDrawer,
   },
-  data () {
+  data() {
     return {
       drawer: false,
       snackbar: {
@@ -108,27 +108,30 @@ export default {
         icon: '',
         timeout: 5000,
         miltiLine: false,
-        vertical: false
+        vertical: false,
       },
       snackbar_show: false,
       routes: [],
-      title: 'تئوری‌بی‌ششصدودوازده'
+      title: 'تئوری‌بی‌ششصدودوازده',
     }
   },
   computed: {
-    ...mapGetters(['getCartLength', 'getCart'])
+    ...mapGetters(['getCartLength', 'getCart']),
   },
   watch: {
     '$auth.user': {
       immediate: true,
       deep: true,
-      handler (nv) {
+      handler(nv) {
         // this.routes = routeGenerator(nv && nv.role)
-        this.menus = this.menuGeneretor({ $auth: this.$auth })
-      }
-    }
+        this.menus = this.menuGenerator({ $auth: this.$auth })
+      },
+    },
   },
-  mounted () {
+  created() {
+    this.menuGenerator()
+  },
+  mounted() {
     this.setupTimer()
     EventBus.$on('setSnack', (data) => {
       if (typeof data === 'string') {
@@ -149,11 +152,10 @@ export default {
     EventBus.$on('openNav', () => {
       this.drawer = true
     })
-    // this.menuGeneretor()
     // this.routes = routeGenerator(this.$auth.user && this.$auth.user.role)
   },
   methods: {
-    setupTimer () {
+    setupTimer() {
       clearInterval(interval)
       let time
       interval = setInterval(() => {
@@ -165,7 +167,7 @@ export default {
         this.panel = 0
       }
     },
-    menuGeneretor (context) {
+    menuGenerator(context) {
       return [
         {
           text: 'محصولات سفارشی',
@@ -175,31 +177,31 @@ export default {
             {
               text: 'کارت صدا',
               icon: 'mdi-image',
-              to: '/products/VoiceCard/60a80142d6a7bbb590a2fc98'
+              to: '/products/VoiceCard/60a80142d6a7bbb590a2fc98',
             },
             {
               text: 'کتاب خاطره',
               icon: 'mdi-book-open-page-variant',
-              to: '/products/DiaryBook/60a801f5d6a7bbb590a2fc9d'
+              to: '/products/DiaryBook/60a801f5d6a7bbb590a2fc9d',
             },
             {
               text: 'پولاروید',
               icon: 'mdi-polaroid',
-              to: '/products/Polaroid/60a7ff3cd6a7bbb590a2fc94'
-            }
-          ]
+              to: '/products/Polaroid/60a7ff3cd6a7bbb590a2fc94',
+            },
+          ],
         },
         {
           text:
-            context.$auth.user && context.$auth.user.address
+            context?.$auth?.user && context.$auth.user.address
               ? context.$auth.user.address.firstName
               : 'به کجا ارسال شود',
           icon: 'mdi-truck-delivery-outline',
           auth: ['user', 'admin'],
-          to: '/Address'
-        }
+          to: '/Address',
+        },
       ]
-    }
-  }
+    },
+  },
 }
 </script>

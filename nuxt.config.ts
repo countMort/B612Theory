@@ -1,9 +1,12 @@
+import type { NuxtConfig } from '@nuxt/types'
 import colors from 'vuetify/es5/util/colors'
+// @ts-ignore
 import fa from 'vuetify/es5/locale/fa'
 // const env = process.env.NODE_ENV || 'dev'
 // const URL = env== 'dev' ? 'http://localhost:8111' : 'https://b612theory.ir'
 const URL = 'http://localhost:9905'
-export default {
+
+const config: NuxtConfig = {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     // titleTemplate: '%s - B-612',
@@ -13,29 +16,35 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       {
         name: 'google-site-verification',
-        content: '5Te0JCs2f01GsIj-bVeFAU8ZN8BPsOU-DKYUIBQDZ4k'
+        content: '5Te0JCs2f01GsIj-bVeFAU8ZN8BPsOU-DKYUIBQDZ4k',
       },
       {
         hid: 'description',
         name: 'description',
-        content: 'کبریت رنگی B612 | خرید حس خوب برای دیگران'
+        content: 'کبریت رنگی B612 | خرید حس خوب برای دیگران',
       },
       {
         name: 'keywords',
-        content: 'کبریت رنگی , b612 , B612 , هنری,هنر,رومنس,هدیه , کادو'
+        content: 'کبریت رنگی , b612 , B612 , هنری,هنر,رومنس,هدیه , کادو',
       },
       { name: 'format-detection', content: 'telephone=no' },
       {
-        'http-equiv': 'cache-control', content: 'no-cache'
+        'http-equiv': 'cache-control',
+        content: 'no-cache',
+        property: '',
       },
       {
-        'http-equiv': 'expires', content: '0'
+        'http-equiv': 'expires',
+        content: '0',
+        property: '',
       },
       {
-        'http-equiv': 'pragma', content: 'no-cache'
-      }
+        'http-equiv': 'pragma',
+        content: 'no-cache',
+        property: '',
+      },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/logo.ico' }]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/logo.ico' }],
     // script: [
     //   {
     //     src: 'https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image.prod.js'
@@ -50,7 +59,11 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: ['@/assets/fonts/iransans/css/fontiran.css', '~/assets/variables.scss'],
+  css: [
+    '@/assets/fonts/iransans/css/fontiran.css',
+    '~/assets/variables.scss',
+    '~/assets/main.scss',
+  ],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
@@ -60,7 +73,7 @@ export default {
     { src: '~plugins/moment' },
     { src: '~plugins/try', ssr: false },
     { src: '~plugins/persianNumber' },
-    { src: '~plugins/vueClipboard', ssr: false }
+    { src: '~plugins/vueClipboard', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -70,7 +83,8 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    '@nuxtjs/eslint-module'
+    '@nuxtjs/eslint-module',
+    '@nuxt/typescript-build',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -80,7 +94,7 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     '@nuxtjs/auth-next',
-    '@nuxtjs/toast'
+    '@nuxtjs/toast',
     // '@tui-nuxt/editor'
   ],
 
@@ -96,19 +110,19 @@ export default {
         message: 'مشکلی به وجود آمده است',
         options: {
           type: 'error',
-          icon: 'close'
-        }
-      }
-    ]
+          icon: 'close',
+        },
+      },
+    ],
   },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    proxy: true
+    proxy: true,
   },
 
   proxy: {
-    '/api': URL
+    '/api': URL,
   },
 
   // pwa: {
@@ -119,7 +133,7 @@ export default {
   pwa: {
     icon: {
       source: '~/static/logo-b612.png',
-      fileName: 'logo-b612.png'
+      fileName: 'logo-b612.png',
     },
     manifest: {
       short_name: 'B612',
@@ -132,10 +146,10 @@ export default {
         {
           source: '~/static/logo-b612.png',
           fileName: 'logo-b612.png',
-          purpose: 'manifest'
-        }
-      ]
-    }
+          purpose: 'manifest',
+        },
+      ],
+    },
   },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
@@ -143,7 +157,7 @@ export default {
     rtl: true,
     lang: {
       locales: { fa },
-      current: 'fa'
+      current: 'fa',
     },
     // customVariables: ['~/assets/variables.scss'],
     theme: {
@@ -158,10 +172,10 @@ export default {
           // error: colors.deepOrange.accent4,
           // success: colors.green.accent3,
           error: '#FF5252',
-          success: '#4CAF50'
-        }
-      }
-    }
+          success: '#4CAF50',
+        },
+      },
+    },
   },
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   // build: {
@@ -182,7 +196,7 @@ export default {
 
   server: {
     port: process.env.PORT || 8000,
-    host: '0.0.0.0'
+    host: '0.0.0.0',
   },
 
   auth: {
@@ -192,18 +206,20 @@ export default {
           login: {
             url: '/api/auth/login',
             method: 'post',
-            propertyName: 'token'
+            propertyName: 'token',
           },
           logout: { url: '/api/auth/logout', method: 'post' },
-          user: { url: '/api/auth/user', method: 'get', propertyName: 'user' }
-        }
-      }
+          user: { url: '/api/auth/user', method: 'get', propertyName: 'user' },
+        },
+      },
     },
     redirect: {
       login: '/login',
       logout: '/',
       callback: '/login',
-      home: '/'
-    }
-  }
+      home: '/',
+    },
+  },
 }
+
+export default config
