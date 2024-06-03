@@ -27,7 +27,6 @@ export default {
   data: () => ({
     model: null,
     glassesMesh: null,
-    fetch: null,
     offsetX: 0,
     offsetY: 0,
     scaleX: 0,
@@ -38,31 +37,6 @@ export default {
     setInterval(() => {
       this.detectAndPositionGlasses()
     }, 120)
-  },
-  created() {
-    if (!process.client) return
-    this.fetch = window.fetch
-    window.fetch = new Proxy(window.fetch, {
-      apply: function (target, that, args) {
-        if (
-          args &&
-          args[0] &&
-          args[0].startsWith(
-            'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh'
-          )
-        ) {
-          args[0] = args[0].replace(
-            'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
-            'https://dl.b612theory.ir/ar'
-          )
-        }
-        const temp = target.apply(that, args)
-        return temp
-      },
-    })
-  },
-  beforeDestroy() {
-    window.fetch = this.fetch
   },
   methods: {
     async loadResources() {
@@ -81,7 +55,7 @@ export default {
           shouldLoadIrisModel: true,
           maxFaces: 1,
           runtime: 'mediapipe',
-          solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
+          solutionPath: 'https://dl.b612theory.ir/ar',
           // returnTensors: false,
           // predictIrises: false
         }
