@@ -41,14 +41,7 @@ export default {
   methods: {
     async loadResources() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        })
-        const video = this.$refs.webcam
-        video.srcObject = stream
-        video.addEventListener('loadedmetadata', () => {
-          video.play()
-        })
+        const video = await this.loadVideo()
         // TensorFlow Model
         await tf.setBackend('webgl')
         const detectorConfig = {
@@ -69,6 +62,7 @@ export default {
         const canvasRef = this.$refs.canvas
         const width = canvasRef.clientWidth
         const height = canvasRef.clientHeight
+        console.log('width: ', width, 'height: ', height);
         const scene = new THREE.Scene()
         const camera = new THREE.PerspectiveCamera(
           75,
@@ -104,6 +98,17 @@ export default {
       } catch (error) {
         console.error('Initialization error:', error)
       }
+    },
+    async loadVideo() {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      })
+      const video = this.$refs.webcam
+      video.srcObject = stream
+      video.addEventListener('loadedmetadata', () => {
+        video.play()
+      })
+      return video
     },
     async detectAndPositionGlasses() {
       const video = this.$refs.webcam
@@ -166,9 +171,7 @@ export default {
 .container canvas {
   position: absolute;
   top: 0;
-  bottom: 0;
   left: 0;
-  right: 0;
   width: 100%;
   height: 100%;
   z-index: 2;

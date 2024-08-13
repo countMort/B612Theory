@@ -160,14 +160,14 @@
           <v-card-text class="subtitle-2 text-center">
             لطفا پس از ثبت سفارش، هزینه نهایی را به شماره کارت
             <v-btn
-              v-clipboard:copy="6037991780798769"
+              v-clipboard:copy="6037991717366904"
               v-clipboard:success="onCopy"
               block
               outlined
             >
               <v-icon> mdi-content-copy </v-icon>
               <v-spacer />
-              6037991780798769
+              6037991717366904
             </v-btn>
             به نام
             <b>سجاد ایزدی</b>
