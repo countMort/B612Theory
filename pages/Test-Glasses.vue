@@ -1,6 +1,7 @@
 <template>
   <client-only>
     <div class="example-container">
+      
       <div class="options-panel">
         <img
           id="hat1"

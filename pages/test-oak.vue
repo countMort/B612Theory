@@ -4,6 +4,7 @@
       <MindAr path="white-oak-tree" scale="0.8 0.8 0.8" />
     </client-only>
   </div>
+  
 </template>
 <script>
 import MindAr from '@/components/ar-templates/AnimatedGlb.vue'

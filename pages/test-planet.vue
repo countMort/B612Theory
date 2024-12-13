@@ -3,6 +3,7 @@
     <client-only>
       <MindAr path="dancing-planet" scale="0.8 0.8 0.8" />
     </client-only>
+    
   </div>
 </template>
 <script>

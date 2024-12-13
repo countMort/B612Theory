@@ -2,6 +2,7 @@
   <div style="position: relative; height: 100%; z-index: 2;">
     <client-only>
       <MindAr />
+      
     </client-only>
   </div>
 </template>
